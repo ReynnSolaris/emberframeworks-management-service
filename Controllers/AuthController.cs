@@ -1,4 +1,5 @@
-﻿using EmberFrameworksService.Managers;
+﻿using System.Net;
+using EmberFrameworksService.Managers;
 using EmberFrameworksService.Managers.Firebase;
 using FirebaseAdmin.Auth;
 using Microsoft.AspNetCore.Authorization;
@@ -15,22 +16,21 @@ public class AuthController : Controller
     private FirebaseManager _firebase = new ();
     private Authentication auth = new();
 
-    [HttpGet("dev/GetToken_Dev/{UID}")]
-    public async Task<string> GetToken_Dev(string UID)
+    [HttpGet("dev/GetToken_Dev/{uid}")]
+    public async Task<string> GetToken_Dev(string uid)
     {
-        return await _firebase.GetUserToken(UID);
+        return await _firebase.GetUserToken(uid);
     }
-    [HttpGet("dev/GetUser_Dev/{UID}")]
-    public async Task<UserRecord> GetUser_Dev(string UID)
+    [HttpGet("dev/GetUser_Dev/{uid}")]
+    public async Task<UserRecord> GetUser_Dev(string uid)
     {
-        return await _firebase.getUser(UID);
+        return await _firebase.getUser(uid);
     }
     
-    [Authorize]
-    [HttpGet("dev/UserAuthRequest")]
-    public string UserAuthRequest()
+    [HttpGet("GetIPAddress")]
+    public string? UserAuthRequest()
     {
-        return Request.Headers["Authorization"];
+        return auth.GetClientIPAddress(Request);
     }
 
     [HttpGet("UserAuthenticationVerification/")]
@@ -41,7 +41,9 @@ public class AuthController : Controller
             return await auth.IsAuthenticatedUser(Request);
         }
         catch (Exception e)
-        {}
+        {
+            throw e;
+        }
 
         return false;
     }

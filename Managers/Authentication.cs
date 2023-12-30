@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Net;
 using EmberFrameworksService.Managers.Firebase;
 using Microsoft.Extensions.Primitives;
 
@@ -8,7 +9,7 @@ public class Authentication
 {
     private FirebaseManager _firebaseManager = new();
     
-    private Dictionary<string, string> _getUserReq(HttpRequest req)
+    public Dictionary<string, string> _getUserReq(HttpRequest req)
     {
         Dictionary<string, string> userReq = new Dictionary<string, string>();
         try
@@ -28,6 +29,16 @@ public class Authentication
     {
         Dictionary<string, string> userReq = _getUserReq(request);
         Debug.WriteLine($"{userReq["UID"]} - {userReq["ID_TOKEN"]}");
+        if (String.IsNullOrEmpty(userReq["UID"]) || String.IsNullOrEmpty(userReq["ID_TOKEN"]))
+        {
+            return false;
+        }
         return await _firebaseManager.VerifyToken(userReq["UID"], userReq["ID_TOKEN"]);
+    }
+
+    public string? GetClientIPAddress(HttpRequest req)
+    { 
+        var remoteIpAddress = req.HttpContext.Connection.RemoteIpAddress?.ToString();
+        return remoteIpAddress;
     }
 }
