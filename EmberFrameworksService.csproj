@@ -14,7 +14,9 @@
         <PackageReference Include="MySql.Data" Version="8.2.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Newtonsoft.JsonResult" Version="1.0.5778.10762" />
+        <PackageReference Include="Square" Version="35.1.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+        <PackageReference Include="Twilio.AspNet.Core" Version="8.0.2" />
     </ItemGroup>
 
 </Project>

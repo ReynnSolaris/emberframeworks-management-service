@@ -70,9 +70,9 @@ public class MySqlManager
         }
     }
     
-    public Dictionary<int, Dictionary<int, Object>> ExecuteQuery(string cmdString, string[]? cmdParameters, string connectionString)
+    public Dictionary<int, Dictionary<string, Object>> ExecuteQuery(string cmdString, string[]? cmdParameters, string connectionString)
     {
-        Dictionary<int, Dictionary<int, Object>> QueryResults = new();
+        Dictionary<int, Dictionary<string, Object>> QueryResults = new();
         try {
             using (MySqlConnection connection = GetConnection(connectionString))
             {
@@ -83,13 +83,13 @@ public class MySqlManager
                     int currentRow = 0;
                     while (reader.Read())
                     {
-                        QueryResults.Add(currentRow, new Dictionary<int, Object>() {});
+                        QueryResults.Add(currentRow, new Dictionary<string, Object>() {});
                             
                         for (int i = 0; i < reader.FieldCount; i++)
                         {
                             if (!reader.IsDBNull(i))
                             {
-                                QueryResults[currentRow][i] = reader.GetValue(i);
+                                QueryResults[currentRow][reader.GetName(i)] = reader.GetValue(i);
                             }
                         }
 
@@ -98,7 +98,7 @@ public class MySqlManager
                         
                 }
             }
-
+            
             return QueryResults;
         }
         catch (Exception e) {

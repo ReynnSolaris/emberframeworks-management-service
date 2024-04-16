@@ -28,8 +28,15 @@ public class FirebaseManager
 
     public async Task<bool> VerifyToken(string userId, string userToken)
     {
-        var verifyIdTokenAsync = await _firebaseAuth.VerifyIdTokenAsync(userToken);
-        return verifyIdTokenAsync.Uid == userId;
+        try
+        {
+            var verifyIdTokenAsync = await _firebaseAuth.VerifyIdTokenAsync(userToken);
+            return verifyIdTokenAsync.Uid == userId;
+        }
+        catch (FirebaseAuthException e)
+        {
+            return false;
+        }
     }
     
     public async Task<string> GetUserToken(string uid)
@@ -45,5 +52,15 @@ public class FirebaseManager
             return user;
         }
         return null;
+    }
+
+    public async Task<UserRecord> ChangeUsername(string DisplayName, string UID)
+    {
+        UserRecordArgs args = new UserRecordArgs()
+        {
+            Uid = UID,
+            DisplayName = DisplayName
+        };
+        return await this._firebaseAuth.UpdateUserAsync(args);
     }
 }

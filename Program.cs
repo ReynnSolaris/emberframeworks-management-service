@@ -1,4 +1,5 @@
 using System.Net;
+using EmberFrameworksService.Managers.MVC;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.IdentityModel.Tokens;
@@ -11,7 +12,9 @@ builder.Services.AddCors((options) =>
         {
             policy.WithOrigins("http://localhost:4200",
                 "https://emberframeworks.xyz",
-                "https://management.emberframeworks.xyz");
+                "https://emberframeworks.xyz/",
+                "https://management.emberframeworks.xyz",
+                "https://api.emberframeworks.xyz");
             policy.WithMethods("GET", "POST", "OPTIONS");
             policy.AllowAnyHeader();
         });
@@ -20,15 +23,16 @@ builder.Services.AddCors((options) =>
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddMvc((options =>
+{
+    options.InputFormatters.Insert(0, new RawJsonBodyInputFormatter());
+}));
 builder.Services.AddSwaggerGen();
 builder.WebHost.ConfigureKestrel((Options) => { });
 builder.WebHost.UseUrls("http://0.0.0.0:5000", "https://0.0.0.0:5001");
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-});
-builder.Services.Configure<ForwardedHeadersOptions>(options =>
-{
     options.KnownProxies.Add(IPAddress.Parse("192.168.1.135"));
 });
 
@@ -43,7 +47,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseForwardedHeaders();  
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseCors();
 app.UseAuthorization();
 

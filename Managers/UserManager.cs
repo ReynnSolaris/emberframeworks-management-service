@@ -4,17 +4,17 @@ namespace EmberFrameworksService.Managers;
 
 public class UserManager
 {
-    public User castSQLToUser(Dictionary<int, object> userResult)
+    public User castSQLToUser(Dictionary<string, object> userResult)
     {
         User user = new();
         try
         {
-            user.Id = (string)userResult[0];
-            user.Biography = (string)userResult[1];
-            user.GeoLocation = (string)userResult[2];
-            user.Permissions = (string)userResult[3];
-            user.Badges = (string)userResult[4];
-            user.Titles = (string)userResult[5];
+            user.Id = (string)userResult["Id"];
+            user.Biography = (string)userResult["Biography"];
+            user.GeoLocation = (string)userResult["GeoLocation"];
+            user.Permissions = (string)userResult["Permissions"];
+            user.Badges = (string)userResult["Badges"];
+            user.Titles = (string)userResult["Titles"];
         }
         catch (Exception e)
         {
